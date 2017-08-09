@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>肽积木</title>
+</head>
+<body><div style="position: relative;">
+	    <img src="images/C0021834.jpg" style="position:absolute;width:400px; height:400px; left:0px; top:0px;" />
+	    <canvas id="Canvas" texsrc="images/C0021834.jpg" imgsrc='images/C0021834.jpg' width="400" height="400" style='position:absolute;width:400px; height:400px; left:0px; top:0px;background: transparent;'></canvas>
+
+	</div>
+
+	<iframe  style="position: relative;" src="drawing-board.html" frameborder="0" width="1000" height="600"></iframe>
+	
+	
+<script>
+
+
+
+    function CanvasDoodle(canvas){
+        this.canvas=canvas;
+        this.ctx=canvas.getContext("2d");
+        this.imgSrc=canvas.getAttribute("imgsrc");
+        this.width=canvas.width;
+        this.height=canvas.height;
+        this.left=parseInt(canvas.style.left);
+        this.top=parseInt(canvas.style.top);
+        this.touchX=0;
+        this.touchY=0;
+        this.needDraw=false;
+        this.init();
+    }
+
+    CanvasDoodle.prototype={
+        init:function(){
+            var _self=this;
+            _self.ctx.fillRect(20,20,150,100);
+            var img=new Image();
+            img.width= this.width
+            img.height= this.height
+            img.onload=function(){
+                var pat=_self.ctx.createPattern(img,"no-repeat");
+                _self.ctx.strokeStyle=pat;
+                _self.ctx.lineCap="round";
+                _self.ctx.lineJoin="round";
+                _self.ctx.lineWidth="25";
+	        	_self.ctx.beginPath();
+	            _self.ctx.moveTo(100,100);
+	            for (var i = 100; i <  500; i+=25) {
+	            	for (var j = 100; j < 500; j++) {
+		                _self.ctx.lineTo(i,j);
+	            	};
+	            };
+                _self.ctx.stroke();
+            }
+            img.src=this.imgSrc;
+            // console.log(img)
+        this.canvas.addEventListener('mousedown',function(e){
+                e.preventDefault();
+                _self.needDraw=true;
+                
+            },false);
+
+        this.canvas.addEventListener('mousemove',function(e){
+            e.preventDefault();
+            if(_self.needDraw){
+                _self.ctx.lineTo(e.clientX-_self.left,e.clientY-_self.top);
+                _self.ctx.stroke();
+            }
+        },false);
+
+            this.canvas.addEventListener('mouseup',function(e){
+                e.preventDefault();
+                _self.needDraw=false;
+            });
+
+        }
+    };
+    new CanvasDoodle(document.getElementById('Canvas'));
+
+</script>
+</body>
+</html>
